@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { runtimeRequire } from '../../scripts/runtime-path.mjs';
+const activationHost = runtimeRequire()('@deepseek-ai/dsh/package.json').version === '0.2.1-rc.5';
 import { createHash } from 'node:crypto';
 import { spawn, execFileSync } from 'node:child_process';
 import { mkdtempSync, existsSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
@@ -402,7 +404,7 @@ test('GUI runs a long one-shot report through paged delivery without exposing re
   expect(pages).toBeGreaterThan(10);
   const openReport = async () => {
     await page.getByRole('button', { name: '1 个子智能体', exact: true }).click();
-    if (process.env.DSH_RUNTIME_BIN?.includes('0.2.1-rc.5'))
+    if (activationHost)
       await expect(page.getByRole('treeitem', { name: /^GUI Long Report/ })).toHaveAttribute('aria-label', /一次性/);
     await page.getByText('GUI Long Report', { exact: true }).click();
     await expect(page.getByText('一次性子智能体记录', { exact: true })).toBeVisible();
