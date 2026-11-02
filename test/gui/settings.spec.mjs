@@ -107,7 +107,7 @@ test('GUI creates roles and validates tool/role tags before saving and reloading
 test('server-only rejection exposes the native reason and keeps the unsaved role', async () => {
   await addRole('blocked', '被拒角色');
   await save();
-  await expect(page.getByRole('alert')).toContainText('Provider subagentbook:blocked is already owned by another plugin');
+  await expect(page.locator('.sb-error')).toContainText('Provider subagentbook:blocked is already owned by another plugin');
   await expect(page.getByRole('button', { name: '角色预设', exact: true })).toContainText('被拒角色');
   await expect(page.getByText('草稿', { exact: true })).toBeVisible();
   await page.getByRole('button', { name: '放弃草稿', exact: true }).click();
@@ -123,7 +123,7 @@ test('two GUI drafts report a real revision conflict without discarding user inp
   await other.getByRole('button', { name: '保存草稿', exact: true }).click();
   await expect(other.getByText('草稿', { exact: true })).toHaveCount(0);
   await save();
-  await expect(page.getByRole('alert')).toContainText('配置已被更新');
+  await expect(page.locator('.sb-error')).toContainText('配置已被更新');
   await expect(page.getByRole('textbox', { name: 'Persona', exact: true })).toHaveValue('stale unsaved Persona');
   await page.getByRole('button', { name: '放弃草稿', exact: true }).click();
   await expect(page.getByRole('textbox', { name: 'Persona', exact: true })).toHaveValue('Persona worker');
