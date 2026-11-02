@@ -113,6 +113,12 @@ try {
   writeConfig(book); await start();
   await assert.rejects(parent.agent.ctx.agents.resume({ resumeSessionId: 'missing.native', agentOptions: { provider: 'fixture', model: 'pro' } }), { name: 'SessionPersistenceNotFoundError' });
   check('native non-book restoration retains native diagnostics for opaque session ids');
+  const backgroundReceipt = await ctx.get('tools').execute({ agent: parent.agent, name: 'subagentbook', callId: 'background-backgroundReceipt', arguments: { preset: 'worker', prompt: 'first', background: true }, signal: new AbortController().signal });
+  assert.equal(backgroundReceipt.isError, false, JSON.stringify(backgroundReceipt));
+  assert.equal(typeof backgroundReceipt.value.childId, 'string');
+  assert.ok(Object.keys(backgroundReceipt.value).every(key => ['childId', 'messageId'].includes(key)));
+  await settled(backgroundReceipt.value.childId);
+  check('background tool returns a lossless JSON receipt without native activation handles');
   const first = await api().startContinuable(parent.agent, { presetId: 'worker', prompt: 'first' });
   await settled(first.childId);
   const initialActivity = (await api().inspectInstance(first.childId)).activity;
