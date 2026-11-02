@@ -68,3 +68,7 @@ One-shot结果提供有界的最终答复首段与 `report.nextOffset`。父级�
 候选版通过公共客户端槽位与已认证实例诊断，把书内一次性任务标为“一次性”，并显示只读记录提示。打开记录仍使用宿主真实地址；不改写持久 descriptor/catalog，也不授予续写权限。持续任务保留原生输入与继续行为。代码升级不会自动迁移已有冻结实例。
 
 源码与问题反馈：[GitHub](https://github.com/dalizi2333/dsh-subagentbook)。当前为预发布候选；GitHub 源码托管不等于已发布 npm 包或稳定版。
+
+## 当前兼容范围
+
+源码版本 `0.1.0-alpha.5` 已按 DSH `0.2.0-rc.2` / `0.2.1-rc.5` 验证；详见[兼容与验证范围](docs/compatibility.md)。源码更新与 npm 发布分开，旧实例不自动迁移。
