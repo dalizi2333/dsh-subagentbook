@@ -1,0 +1,21 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {stageSnapshot} from '../lib/checkpoints.js';
+import {recoveryPacket} from '../lib/recovery.js';
+const record={instanceId:'child',parentId:'parent',depth:2,ceiling:3,compiled:{presetId:'worker',provider:'fixture',model:'pro',tools:['bash'],delegates:[],compositionRevision:'old',actionScope:'read-only'},inheritedPolicy:{sandboxMode:'workspace-write',workspaceRoot:'/source',env:{SECRET:'DO_NOT_COPY'}}};
+const stage=stageSnapshot(record,[{type:'user/message',seq:1,time:1,data:{source:{kind:'user'},content:[{type:'text',text:'original task'}]}},{type:'assistant/message',seq:2,time:2,data:{message:{content:[{type:'text',text:'progress'},{type:'reasoning',text:'PRIVATE_REASONING'}]}}}]);
+test('continuation packet keeps provenance, limits and provisional status without treating it as authorization',()=>{
+ const packet=recoveryPacket(record,stage,{activity:{state:'interrupted'},effectiveCeiling:3});
+ assert.equal(packet.dispatched,false);assert.equal(packet.requiresReview,true);assert.equal(packet.targetSessionId,'parent');
+ assert.ok(packet.text.includes('original task'));assert.ok(packet.text.includes('progress'));
+ assert.ok(packet.text.includes('"model": "pro"'));assert.ok(packet.text.includes('"ceiling": 3'));
+ assert.ok(packet.text.includes('"mode": "read-only"'));
+ assert.ok(!packet.text.includes('DO_NOT_COPY'));assert.ok(!packet.text.includes('PRIVATE_REASONING'));
+ assert.throws(()=>recoveryPacket(record,stage,{activity:{state:'running'}}),{code:'RECOVERY_UNAVAILABLE'});
+ for(const state of ['available','empty'])assert.throws(()=>recoveryPacket(record,stage,{activity:{state:'completed'},report:{state}}),{code:'RECOVERY_UNAVAILABLE'});
+ assert.throws(()=>recoveryPacket(record,stage,{activity:{state:'completed'}}),{code:'RECOVERY_UNAVAILABLE'});
+ assert.equal(recoveryPacket(record,stage,{activity:{state:'completed'},report:{state:'unavailable'}}).dispatched,false);
+ assert.throws(()=>recoveryPacket({...record,parentId:'other'},stage,{activity:{state:'interrupted'}}),{code:'RECOVERY_UNAVAILABLE'});
+ assert.throws(()=>recoveryPacket({...record,compiled:{...record.compiled,compositionRevision:'changed'}},stage,{activity:{state:'interrupted'}}),{code:'RECOVERY_UNAVAILABLE'});
+ const root={...record,mode:'root'};assert.equal(recoveryPacket(root,stage,{activity:{state:'interrupted'}}).targetSessionId,'child');
+});

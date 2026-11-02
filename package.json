@@ -1,0 +1,85 @@
+{
+  "name": "@mimo-codex/dsh-subagentbook",
+  "version": "0.1.0-alpha.4",
+  "description": "Subagentbook for MiMo CodeX: model-aware subagent presets, continuable conversations and pinned restoration.",
+  "type": "module",
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "README.md",
+    "AGENTS.md",
+    "LICENSE",
+    "docs",
+    "examples"
+  ],
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.4",
+    "@deepseek-ai/dsh": "0.2.0-rc.2 || 0.2.1-rc.5"
+  },
+  "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.4",
+    "@playwright/test": "1.64.1",
+    "js-yaml": "4.3.2"
+  },
+  "dependencies": {
+    "@deepseek-ai/schemastery": "~3.18.4"
+  },
+  "scripts": {
+    "build:client": "node scripts/build-client.mjs",
+    "verify:install": "node scripts/verify-install.mjs",
+    "ci": "node scripts/ci.mjs",
+    "test": "node --test test/book.test.mjs test/client.test.mjs test/review-report.test.mjs test/artifacts.test.mjs test/reports.test.mjs test/graph.test.mjs test/activity.test.mjs test/review-checkpoint.test.mjs test/report-export.test.mjs test/checkpoints.test.mjs test/recovery.test.mjs test/team-template.test.mjs",
+    "test:host": "node scripts/host-test.mjs",
+    "test:roots": "node scripts/root-test.mjs",
+    "test:verification": "node scripts/verification-test.mjs",
+    "test:continuation": "node scripts/continuation-test.mjs",
+    "test:settings": "node scripts/settings-test.mjs",
+    "preview": "node scripts/preview.mjs",
+    "preview:gui": "node scripts/preview-gui.mjs",
+    "test:gui": "playwright test",
+    "review:checkpoint": "node scripts/review-checkpoint.mjs",
+    "report:export": "node scripts/export-report.mjs"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-settings",
+        "@deepseek-ai/dsh-api-remotes"
+      ],
+      "platform": "web"
+    }
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "mimo",
+    "subagent",
+    "preset"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dalizi2333/dsh-subagentbook.git"
+  },
+  "homepage": "https://github.com/dalizi2333/dsh-subagentbook#readme",
+  "bugs": {
+    "url": "https://github.com/dalizi2333/dsh-subagentbook/issues"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "entryPresets": [
+    "worker"
+  ],
+  "presets": [
+    {
+      "id": "worker",
+      "name": "执行者",
+      "description": "根据明确任务进行实现并返回验证结果。",
+      "defaults": {
+        "persona": {
+          "text": "You implement the delegated task, inspect the relevant source, and verify the result. Report the change and evidence concisely."
+        },
+        "tools": [],
+        "delegates": [
+          "worker"
+        ],
+        "maxNestedDepth": 1
+      },
+      "models": [
+        {
+          "provider": "mimo",
+          "model": "mimo-v2.6-flash",
+          "overrides": {
+            "tools": [
+              "bash"
+            ]
+          }
+        },
+        {
+          "provider": "mimo",
+          "model": "mimo-v2.6-pro",
+          "overrides": {
+            "tools": [
+              "bash",
+              "read"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

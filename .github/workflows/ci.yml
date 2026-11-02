@@ -1,0 +1,43 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  installability:
+    name: 可安装性 (${{ matrix.dsh }})
+    strategy:
+      fail-fast: false
+      matrix:
+        dsh: [0.2.0-rc.2, 0.2.1-rc.5]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: 安装 pnpm 与待测 CLI
+        run: npm install -g pnpm@11 @deepseek-ai/dsh@${{ matrix.dsh }}
+      - name: 安装浏览器测试依赖
+        run: |
+          npm ci --legacy-peer-deps --ignore-scripts --no-audit --no-fund
+          npx playwright install --with-deps chromium
+      - name: 本地与 CI 共用的安装门
+        run: npm run ci
+      - name: 保留浏览器失败现场
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gui-regression-${{ matrix.dsh }}
+          path: |
+            playwright-report/
+            test-results/
+          if-no-files-found: ignore
+          retention-days: 7

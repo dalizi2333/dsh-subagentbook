@@ -1,0 +1,14 @@
+node_modules/
+coverage/
+.cache/
+tmp/
+*.tgz
+*.log
+.env
+.env.*
+!.env.example
+log/**/local-env.md
+log/**/local-artifacts/
+
+playwright-report/
+test-results/
