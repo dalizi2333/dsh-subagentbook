@@ -1,5 +1,5 @@
 import { createRequire } from 'node:module';
-import { existsSync, realpathSync } from 'node:fs';
+import { existsSync, mkdirSync, readdirSync, realpathSync, symlinkSync } from 'node:fs';
 import { basename, delimiter, dirname, join, resolve } from 'node:path';
 
 export function runtimeRequire() {
@@ -21,4 +21,22 @@ export function runtimeModulesRoot(require) {
     dir = parent;
   }
   return dir;
+}
+
+// Private fixture overlay also exposes the CLI package itself, which is a
+// sibling of (rather than inside) its dependencies in global npm layouts.
+export function linkRuntime(home, require) {
+  const modules = join(home, 'node_modules');
+  const source = runtimeModulesRoot(require);
+  mkdirSync(modules, { recursive: true });
+  for (const entry of readdirSync(source, { withFileTypes: true })) {
+    if (entry.name.startsWith('.')) continue;
+    if (entry.name.startsWith('@')) {
+      mkdirSync(join(modules, entry.name), { recursive: true });
+      for (const name of readdirSync(join(source, entry.name)))
+        symlinkSync(join(source, entry.name, name), join(modules, entry.name, name), 'dir');
+    } else symlinkSync(join(source, entry.name), join(modules, entry.name), 'dir');
+  }
+  const dsh = join(modules, '@deepseek-ai/dsh');
+  if (!existsSync(dsh)) symlinkSync(dirname(require.resolve('@deepseek-ai/dsh/package.json')), dsh, 'dir');
 }

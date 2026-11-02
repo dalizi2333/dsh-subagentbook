@@ -402,6 +402,8 @@ test('GUI runs a long one-shot report through paged delivery without exposing re
   expect(pages).toBeGreaterThan(10);
   const openReport = async () => {
     await page.getByRole('button', { name: '1 个子智能体', exact: true }).click();
+    if (process.env.DSH_RUNTIME_BIN?.includes('0.2.1-rc.5'))
+      await expect(page.getByRole('treeitem', { name: /^GUI Long Report/ })).toHaveAttribute('aria-label', /一次性/);
     await page.getByText('GUI Long Report', { exact: true }).click();
     await expect(page.getByText('一次性子智能体记录', { exact: true })).toBeVisible();
     await expect(page.getByRole('button', { name: '发送消息', exact: true })).toHaveCount(0);
