@@ -34,6 +34,7 @@ function run(command, args, options = {}) {
     if (home) {
       writeFileSync(join(home, `${phase}.log`), `${result.stdout ?? ''}\n${result.stderr ?? ''}`);
     }
+    console.error(result.stdout ?? '', result.stderr ?? '');
     throw new Error(`${command} ${args.join(' ')} failed: ${result.error?.message ?? `exit ${result.status}`}`);
   }
   return result.stdout;

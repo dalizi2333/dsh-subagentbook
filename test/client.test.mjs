@@ -578,3 +578,15 @@ test('failed recovery read cannot replace the original settings refusal', async 
   } } }, target);
   await assert.rejects(writer.mutate([], 1), { code: 'settings/rejected', message: 'Native schema refused actionScope' });
 });
+
+test('one-shot presentation corrects only authenticated modes without mutating native catalog state', () => {
+  const state = { projectionsBySession: { root: { values: { subagentCatalog: [
+    { id: 'book', mode: 'continuable' }, { id: 'native', mode: 'continuable' },
+    { id: 'continued', mode: 'continuable' },
+  ] } } } };
+  const result = client.presentBookCatalogs(state, { book: 'one-shot', continued: 'continuable' });
+  assert.equal(result.projectionsBySession.root.values.subagentCatalog[0].mode, 'one-shot');
+  assert.equal(state.projectionsBySession.root.values.subagentCatalog[0].mode, 'continuable');
+  assert.equal(result.projectionsBySession.root.values.subagentCatalog[1], state.projectionsBySession.root.values.subagentCatalog[1]);
+  assert.equal(client.presentBookCatalogs(state, {}), state);
+});

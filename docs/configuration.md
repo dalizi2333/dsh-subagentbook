@@ -196,3 +196,7 @@ One-shot reports independently show saved/intact, saved empty result, or no inta
 The rc.5 host owns local children through public activations. Foreground one-shot tasks use caller delivery, and their execution scope is released before the result resolves. Read saved configuration with `readInstance` and final text through the report API; do not execute tools or dispatch work using the disposed child. The live Agent reference is valid only during its activation.
 
 The native local descriptor is continuable, while the book record explicitly retains one-shot semantics. Book follow-up and cold resume of a one-shot remain rejected; a successor must be explicitly delegated by its original authorized parent. Background instances retain their original continuable behavior. Cancellation after one-shot acceptance disposes that exact activation. Both versions keep the native manager's ownership, original route, permission snapshot, ancestor ceiling and executable fingerprint; upgrading code is not permission to resume old instances under new code.
+
+### rc.5 client presentation
+
+The authenticated diagnostics record supplies the book mode for catalog labels and an independent read-only composer slot. Native transcript navigation retains the host's actual durable address; the presentation adapter does not rewrite descriptors, events or session stores. Unknown/non-book modes retain native behavior. One-shot follow-up remains rejected by runtime checks independently of the UI. Frozen existing instances are not hot-updated by upgrading source code.

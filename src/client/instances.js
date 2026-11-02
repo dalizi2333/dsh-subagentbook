@@ -121,9 +121,11 @@ function installInstanceInfo(ctx, namespace) {
   ctx.inject(['remote'], async local => {
     const off = await local.remote.$mount({ package: '@mimo-codex/dsh-subagentbook/diagnostics', descriptors: [INSTANCE_REMOTE, REPORT_EXPORT_REMOTE, CHECKPOINT_EXPORT_REMOTE, RECOVERY_REMOTE] });
     local.effect(() => off, 'subagentbook.instance-remote');
-    local.inject(['remote.subagentbookDiagnostics'], wired => wired.slots.inject('conversation.session.header.actions', () => wired.slots.register({
+    local.inject(['remote.subagentbookDiagnostics'], wired => {
+      const inspect = installBookPresentation(wired, id => wired.remote.subagentbookDiagnostics.inspect(id));
+      return wired.slots.inject('conversation.session.header.actions', () => wired.slots.register({
       name: 'conversation.session.header.actions', id: 'subagentbook.instance', locale: namespace,
-      inject: sessionId => ({ inspect: id => wired.remote.subagentbookDiagnostics.inspect(id), exportReport: id => wired.remote.subagentbookDiagnostics.exportReport(id), exportCheckpoint: id => wired.remote.subagentbookDiagnostics.exportCheckpoint(id), prepareRecovery: id => wired.remote.subagentbookDiagnostics.prepareRecovery(id) }),
-    }, InstanceInfo)));
+      inject: sessionId => ({ inspect, exportReport: id => wired.remote.subagentbookDiagnostics.exportReport(id), exportCheckpoint: id => wired.remote.subagentbookDiagnostics.exportCheckpoint(id), prepareRecovery: id => wired.remote.subagentbookDiagnostics.prepareRecovery(id) }),
+    }, InstanceInfo)); });
   });
 }

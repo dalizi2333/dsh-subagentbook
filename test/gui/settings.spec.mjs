@@ -403,6 +403,8 @@ test('GUI runs a long one-shot report through paged delivery without exposing re
   const openReport = async () => {
     await page.getByRole('button', { name: '1 个子智能体', exact: true }).click();
     await page.getByText('GUI Long Report', { exact: true }).click();
+    await expect(page.getByText('一次性子智能体记录', { exact: true })).toBeVisible();
+    await expect(page.getByRole('button', { name: '发送消息', exact: true })).toHaveCount(0);
     await page.getByRole('button', { name: '实例配置', exact: true }).click();
     return page.getByRole('region', { name: '实例配置', exact: true });
   };

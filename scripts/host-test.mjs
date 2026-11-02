@@ -5,7 +5,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { pathToFileURL, fileURLToPath } from 'node:url';
 import yaml from 'js-yaml';
-import { runtimeRequire } from './runtime-path.mjs';
+import { runtimeRequire, runtimeModulesRoot } from './runtime-path.mjs';
 import { teachingFixture } from './teaching-fixture.mjs';
 
 const require = runtimeRequire();
@@ -16,7 +16,7 @@ const { installModelSelection } = await load('@deepseek-ai/dsh-agent');
 const { LlmAdapter } = await load('@deepseek-ai/dsh-llm');
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const home = mkdtempSync(join(tmpdir(), 'subagentbook-host-'));
-symlinkSync(resolve(require.resolve('@deepseek-ai/dsh/package.json'), '../../..'), join(home, 'node_modules'), 'dir');
+symlinkSync(runtimeModulesRoot(require), join(home, 'node_modules'), 'dir');
 const oldHome = process.env.DSH_HOME;
 process.env.DSH_HOME = home;
 const captured = [];

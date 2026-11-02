@@ -1,3 +1,5 @@
 # Subagentbook development
 
-Use Node >=22. Run npm run build:client after editing src/client; never hand-edit lib/client.js. npm run ci is the local and GitHub CI gate. Supported DSH versions: 0.2.0-rc.2 and 0.2.1-rc.5. Keep permissions narrowing-only and existing instance snapshots immutable. Use public host APIs; do not patch private lifecycle managers. Tool teaching belongs to Promptbook. Do not commit credentials or local instance data.
+Read README.md and docs/configuration.md before modifying integration contracts.
+Keep npm run ci passing on both declared DSH versions. Run npm run build:client after changing src/client; lib/client.js is generated.
+Tests use isolated offline hosts. Do not commit credentials or private project evidence. Runtime permissions, pinned restoration, parent ownership and ancestor depth must remain enforced.
