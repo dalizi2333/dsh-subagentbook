@@ -19,7 +19,9 @@
 
 ## 跑者失败时的只读入口
 
-[可选团队示例](../examples/ur-team.json)沿用22号实战的九角色，另加 `review-relay`。根角色 `developer` 可以委派 `runner` 或 `review-relay`。后者的 `actionScope` 是运行时 `read-only`，只允许委派 `chief`、`expert`、`docs`；主审再委派三个视角。`developer(0) → review-relay(1) → chief(2) → perspective(3)` 沿用原生根深度3。
+[可选团队示例](../examples/ur-team.json)沿用22号实战的九角色，另加 `review-relay`。根角色 `developer` 可以委派 `runner`、`review-relay` 或 `focused-review`。中继的 `actionScope` 是运行时 `read-only`，只允许委派 `chief`、`expert`、`docs`；主审再委派三个视角。`developer(0) → review-relay(1) → chief(2) → perspective(3)` 沿用原生根深度3。
+
+仅新增或收紧防御性测试断言时，开发者或跑者运行相关测试后，默认交给一名 `focused-review` 审查最终差异、测试数据和运行证据。该角色只读，无委派边，嵌套深度为零。
 
 跑者失败后，根停止该轮收口声称，保留原失败记录，创建新的只读中继任务。任务明确审查范围、当前版本与原报告索引；中继收集独立结论，修复由根执行者做。不得改用可写runner并仅在提示词中要求只读，也不得临时扩大既有实例的委派白名单。核验副本仍由可写runner直接创建，中继不能借核验角色扩权。
 

@@ -257,7 +257,7 @@ try {
 
   // Exercise the shipped fallback role on an equivalent writable depth-0 parent.
   const urBook = JSON.parse(readFileSync(join(root, 'examples/ur-team.json'), 'utf8'));
-  assert.deepEqual(urBook.presets.find(p => p.id === 'developer').defaults.delegates, ['runner', 'review-relay']);
+  assert.deepEqual(urBook.presets.find(p => p.id === 'developer').defaults.delegates, ['runner', 'review-relay', 'focused-review']);
   urBook.entryPresets = ['review-relay'];
   for (const role of urBook.presets) role.models = [{ provider: 'fixture', model: 'pro' }];
   api.updateBook(urBook);

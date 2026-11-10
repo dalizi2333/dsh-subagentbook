@@ -5,7 +5,7 @@ import { EMPTY_BOOK, resolvePreset } from '../lib/definition.js';
 
 test('team is a complete isolated graph with exact routes, narrow review permissions and one entry', () => {
   const { book, entryId } = addExpertTeam(EMPTY_BOOK, 'local', 'pro');
-  assert.equal(book.presets.length, 10);
+  assert.equal(book.presets.length, 11);
   assert.deepEqual(book.entryPresets, [entryId]);
   assert.equal(entryId, 'ur.developer');
   for (const preset of book.presets) {
@@ -17,8 +17,11 @@ test('team is a complete isolated graph with exact routes, narrow review permiss
   }
   const role = id => book.presets.find(p => p.id === `ur.${id}`).defaults;
   assert.equal(role('verifier').actionScope, 'verification-copy');
-  for (const id of ['chief', 'completeness', 'correctness', 'impact', 'expert', 'docs', 'review-relay']) assert.equal(role(id).actionScope, 'read-only');
-  assert.deepEqual(role('developer').delegates, ['ur.runner', 'ur.review-relay']);
+  for (const id of ['chief', 'completeness', 'correctness', 'impact', 'expert', 'docs', 'review-relay', 'focused-review']) assert.equal(role(id).actionScope, 'read-only');
+  assert.deepEqual(role('developer').delegates, ['ur.runner', 'ur.review-relay', 'ur.focused-review']);
+  assert.ok(role('runner').delegates.includes('ur.focused-review'));
+  assert.equal(role('focused-review').maxNestedDepth, 0);
+  assert.deepEqual(role('focused-review').delegates, []);
   assert.deepEqual(role('chief').delegates, ['ur.completeness', 'ur.correctness', 'ur.impact']);
 });
 
@@ -29,8 +32,8 @@ test('repeated additions preserve authored roles and use separate internal deleg
   const second = addExpertTeam(first, 'b', 'flash');
   assert.deepEqual(first, before, 'pure construction must not mutate its input');
   assert.equal(second.entryId, 'ur-2.developer');
-  assert.deepEqual(second.book.presets.slice(0, 10), before.presets);
-  assert.ok(second.book.presets.slice(10).every(p => p.defaults.delegates.every(id => id.startsWith('ur-2.'))));
+  assert.deepEqual(second.book.presets.slice(0, before.presets.length), before.presets);
+  assert.ok(second.book.presets.slice(before.presets.length).every(p => p.defaults.delegates.every(id => id.startsWith('ur-2.'))));
   assert.throws(() => addExpertTeam(first, '', 'pro'), /model/);
   assert.deepEqual(first, before);
 });

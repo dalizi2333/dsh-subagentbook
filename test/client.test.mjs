@@ -36,10 +36,10 @@ test('team import preserves draft edits and pending gates, persists atomically a
   editor.select('worker'); editor.tagInput('tools', '');
   editor.select('ur.developer'); editor.edit('persona', JSON.stringify({ text: 'Customized team root' }));
   assert.equal(await editor.save(), true);
-  assert.equal(parseBook(target.getSnapshot().value.bookJson).presets.length, 11);
+  assert.equal(parseBook(target.getSnapshot().value.bookJson).presets.length, 12);
   assert.equal(editor.getSnapshot().effective.persona.text, 'Customized team root');
   assert.equal(editor.addTeam('fixture', 'flash'), 'ur-2.developer');
-  editor.discard(); assert.equal(editor.getSnapshot().book.presets.length, 11);
+  editor.discard(); assert.equal(editor.getSnapshot().book.presets.length, 12);
   editor.dispose();
 });
 const optionDirectory = () => scope({ modelControlsViewJson: JSON.stringify([
